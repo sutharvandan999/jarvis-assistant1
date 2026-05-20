@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Jarvis Assistant</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+
+            background:
+            radial-gradient(circle at top,#12203d,#050b18);
+
+            color:white;
+
+            font-family:"Segoe UI";
+
+            min-height:100vh;
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+            overflow:hidden;
+        }
+
+        .background-glow{
+
+            position:absolute;
+
+            width:500px;
+            height:500px;
+
+            background:#00ffd5;
+
+            filter:blur(180px);
+
+            opacity:0.15;
+
+            border-radius:50%;
+        }
+
+        .card{
+
+            position:relative;
+
+            width:450px;
+
+            background:rgba(20,30,50,0.85);
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            backdrop-filter:blur(20px);
+
+            border-radius:30px;
+
+            padding:50px;
+
+            text-align:center;
+
+            box-shadow:
+            0 0 40px rgba(0,0,0,0.4);
+        }
+
+        .logo{
+
+            width:90px;
+            height:90px;
+
+            margin:auto;
+            margin-bottom:25px;
+
+            border-radius:25px;
+
+            background:#00ffd5;
+
+            color:#081120;
+
+            display:flex;
+
+            align-items:center;
+            justify-content:center;
+
+            font-size:42px;
+            font-weight:bold;
+        }
+
+        h1{
+
+            font-size:42px;
+
+            margin-bottom:12px;
+        }
+
+        p{
+
+            color:#9fb3d1;
+
+            line-height:1.7;
+
+            margin-bottom:35px;
+        }
+
+        .download-btn{
+
+            display:inline-block;
+
+            width:100%;
+
+            padding:18px;
+
+            border-radius:18px;
+
+            text-decoration:none;
+
+            background:#00ffd5;
+
+            color:#081120;
+
+            font-weight:bold;
+
+            font-size:18px;
+
+            transition:0.25s;
+        }
+
+        .download-btn:hover{
+
+            transform:translateY(-4px);
+
+            box-shadow:
+            0 0 25px rgba(0,255,213,0.5);
+        }
+
+        .version{
+
+            display:inline-block;
+
+            margin-top:20px;
+
+            color:#6f85a8;
+
+            font-size:14px;
+
+            text-decoration:none;
+
+            transition:0.2s;
+        }
+
+.version:hover{
+
+    color:#00ffd5;
+}
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="background-glow"></div>
+
+    <div class="card">
+
+        <div class="logo">
+            J
+        </div>
+
+        <h1>Jarvis Assistant</h1>
+
+        <p>
+            Futuristic Offline Desktop Assistant
+            for Gamers & Power Users.
+        </p>
+
+        <a class="download-btn"
+           href="JarvisAssistant.exe"
+           download>
+
+           Download For Windows
+
+        </a>
+
+        <a class="version"
+            href="about.html">
+
+            Version 0.2 Beta
+
+        </a>
+
+    </div>
+
+</body>
+
+</html>
