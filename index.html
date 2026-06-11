@@ -1,206 +1,528 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Jarvis Assistant</title>
-
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-        }
-
-        body{
-
-            background:
-            radial-gradient(circle at top,#12203d,#050b18);
-
-            color:white;
-
-            font-family:"Segoe UI";
-
-            min-height:100vh;
-
-            display:flex;
-
-            justify-content:center;
-
-            align-items:center;
-
-            overflow:hidden;
-        }
-
-        .background-glow{
-
-            position:absolute;
-
-            width:500px;
-            height:500px;
-
-            background:#00ffd5;
-
-            filter:blur(180px);
-
-            opacity:0.15;
-
-            border-radius:50%;
-        }
-
-        .card{
-
-            position:relative;
-
-            width:450px;
-
-            background:rgba(20,30,50,0.85);
-
-            border:1px solid rgba(255,255,255,0.08);
-
-            backdrop-filter:blur(20px);
-
-            border-radius:30px;
-
-            padding:50px;
-
-            text-align:center;
-
-            box-shadow:
-            0 0 40px rgba(0,0,0,0.4);
-        }
-
-        .logo{
-
-            width:90px;
-            height:90px;
-
-            margin:auto;
-            margin-bottom:25px;
-
-            border-radius:25px;
-
-            background:#00ffd5;
-
-            color:#081120;
-
-            display:flex;
-
-            align-items:center;
-            justify-content:center;
-
-            font-size:42px;
-            font-weight:bold;
-        }
-
-        h1{
-
-            font-size:42px;
-
-            margin-bottom:12px;
-        }
-
-        p{
-
-            color:#9fb3d1;
-
-            line-height:1.7;
-
-            margin-bottom:35px;
-        }
-
-        .download-btn{
-
-            display:inline-block;
-
-            width:100%;
-
-            padding:18px;
-
-            border-radius:18px;
-
-            text-decoration:none;
-
-            background:#00ffd5;
-
-            color:#081120;
-
-            font-weight:bold;
-
-            font-size:18px;
-
-            transition:0.25s;
-        }
-
-        .download-btn:hover{
-
-            transform:translateY(-4px);
-
-            box-shadow:
-            0 0 25px rgba(0,255,213,0.5);
-        }
-
-        .version{
-
-            display:inline-block;
-
-            margin-top:20px;
-
-            color:#6f85a8;
-
-            font-size:14px;
-
-            text-decoration:none;
-
-            transition:0.2s;
-        }
-
-.version:hover{
-
-    color:#00ffd5;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jarvis Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal:        #00ffd5;
+  --teal-2:      #00c9a7;
+  --teal-glow:   rgba(0,255,213,0.18);
+  --teal-dim:    rgba(0,255,213,0.08);
+  --teal-border: rgba(0,255,213,0.25);
+  --bg:          #04080f;
+  --bg2:         #080f1c;
+  --bg3:         #0d1828;
+  --border:      rgba(255,255,255,0.06);
+  --border-md:   rgba(255,255,255,0.10);
+  --text:        #eaf0fb;
+  --text-2:      #8fa8cc;
+  --text-3:      #4a6080;
+  --font-h:      'Outfit', sans-serif;
+  --font-mono:   'JetBrains Mono', monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body {
+  background: radial-gradient(ellipse at 50% 0%, #08142e 0%, #020408 60%);
+  color: var(--text);
+  font-family: var(--font-h);
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 52px;
 }
 
-    </style>
+/* ── GRAIN ── */
+body::before {
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.04;z-index:0;pointer-events:none;
+}
 
+/* ── CANVAS ── */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ══════════════════════════════════
+   SPLIT LAYOUT — left text / right logo
+══════════════════════════════════ */
+.layout {
+  position:relative;z-index:10;
+  width:min(1000px, 96vw);
+  display:grid;
+  grid-template-columns: 1fr 420px;
+  gap:0;
+  min-height:min(560px, 90vh);
+  animation: pageIn .9s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:none}
+}
+
+/* ── LEFT PANEL ── */
+.left {
+  padding: 52px 50px 48px 52px;
+  display:flex;flex-direction:column;justify-content:center;
+  border: 1px solid var(--border-md);
+  border-right: none;
+  border-radius: 28px 0 0 28px;
+  background: rgba(8,15,28,0.88);
+  backdrop-filter:blur(30px);
+  position:relative;overflow:hidden;
+}
+.left::before {
+  content:'';
+  position:absolute;top:0;left:32px;right:32px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--teal),transparent);
+}
+.left::after {
+  content:'';
+  position:absolute;bottom:0;left:0;
+  width:200px;height:200px;
+  background:radial-gradient(circle at bottom left,rgba(0,255,213,0.05),transparent 70%);
+  pointer-events:none;
+}
+
+.eyebrow {
+  font-family:var(--font-mono);
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--teal);opacity:.8;
+  margin-bottom:18px;
+  display:flex;align-items:center;gap:10px;
+  animation: fadeUp .6s .15s both;
+}
+.eyebrow::before{content:'//';opacity:.5;font-size:11px}
+
+h1 {
+  font-family:var(--font-h);
+  font-size:clamp(40px,5.5vw,64px);
+  font-weight:900;
+  letter-spacing:-.03em;
+  line-height:1.05;
+  margin-bottom:10px;
+  animation: fadeUp .6s .22s both;
+}
+h1 .white{color:#fff}
+h1 .teal{
+  background:linear-gradient(90deg,var(--teal),#4af7e2);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.tagline {
+  font-size:15px;font-weight:400;
+  color:var(--text-2);line-height:1.75;
+  margin-bottom:30px;
+  animation: fadeUp .6s .29s both;
+}
+
+/* decorative rule */
+.rule {
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:28px;
+  animation: fadeUp .6s .34s both;
+}
+.rule-line{flex:1;height:1px;background:linear-gradient(to right,rgba(0,255,213,0.25),transparent)}
+.rule-diamond {
+  width:6px;height:6px;
+  background:var(--teal);
+  transform:rotate(45deg);
+  flex-shrink:0;
+  box-shadow:0 0 8px var(--teal-glow);
+}
+
+/* feature list */
+.features {
+  display:flex;flex-direction:column;gap:10px;
+  margin-bottom:36px;
+  animation: fadeUp .6s .38s both;
+}
+.feat-item {
+  display:flex;align-items:center;gap:11px;
+  font-size:13.5px;color:var(--text-2);font-weight:400;
+}
+.feat-item::before {
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--teal);flex-shrink:0;
+  box-shadow:0 0 6px var(--teal-glow);
+}
+
+/* download button */
+.dl-btn {
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 28px;
+  background:var(--teal);
+  color:#04080f;
+  font-family:var(--font-h);font-size:14px;font-weight:700;
+  letter-spacing:.01em;
+  border-radius:12px;
+  text-decoration:none;
+  position:relative;overflow:hidden;
+  transition:all .22s;
+  align-self:flex-start;
+  animation: fadeUp .6s .44s both;
+}
+.dl-btn::after {
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 55%);
+  pointer-events:none;
+}
+.dl-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 44px var(--teal-glow),0 0 0 1px var(--teal-2);
+}
+.dl-btn:active{transform:translateY(0)}
+.dl-btn svg{flex-shrink:0;transition:transform .22s}
+.dl-btn:hover svg{transform:translateY(2px)}
+
+/* about link */
+.about-link {
+  margin-top:14px;
+  display:inline-flex;align-items:center;gap:10px;
+  padding:12px 22px;
+  font-family:var(--font-h);font-size:14px;font-weight:600;
+  color:var(--teal);
+  text-decoration:none;
+  border:1px solid var(--teal-border);
+  border-radius:12px;
+  background:var(--teal-dim);
+  transition:all .25s;
+  animation: fadeUp .6s .5s both;
+  align-self:flex-start;
+}
+.about-link:hover{
+  background:rgba(0,255,213,0.14);
+  border-color:rgba(0,255,213,0.5);
+  color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px var(--teal-glow);
+}
+.about-link svg{transition:transform .25s;flex-shrink:0}
+.about-link:hover svg{transform:translateX(4px)}
+
+/* ── RIGHT PANEL ── */
+.right {
+  border:1px solid var(--border-md);
+  border-left:1px solid rgba(0,255,213,0.1);
+  border-radius:0 28px 28px 0;
+  background:rgba(8,15,28,0.92);
+  backdrop-filter:blur(30px);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  padding:48px 40px;
+}
+.right::before {
+  content:'';
+  position:absolute;top:40px;bottom:40px;left:0;width:1px;
+  background:linear-gradient(to bottom,transparent,rgba(0,255,213,0.15),transparent);
+}
+.right::after {
+  content:'';
+  position:absolute;top:0;right:0;
+  width:280px;height:280px;
+  background:radial-gradient(circle at top right,rgba(0,255,213,0.05),transparent 70%);
+  pointer-events:none;
+}
+
+/* logo presentation */
+.logo-stage {
+  position:relative;
+  width:130px;height:130px;
+  margin-bottom:28px;
+  animation: logoIn 1s .2s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes logoIn{
+  from{opacity:0;transform:scale(0.75) rotate(-12deg)}
+  to{opacity:1;transform:none}
+}
+.logo-glow {
+  position:absolute;inset:-24px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,255,213,0.12),transparent 70%);
+  animation:breathe 4s ease-in-out infinite;
+}
+@keyframes breathe{
+  0%,100%{transform:scale(1);opacity:.7}
+  50%{transform:scale(1.12);opacity:1}
+}
+.logo-ring-outer {
+  position:absolute;inset:-12px;border-radius:32px;
+  border:1px solid rgba(0,255,213,0.18);
+  animation:spinSlow 18s linear infinite;
+}
+.logo-ring-outer::before,
+.logo-ring-outer::after {
+  content:'';
+  position:absolute;width:5px;height:5px;
+  background:var(--teal);transform:rotate(45deg);
+  box-shadow:0 0 7px var(--teal-glow);
+}
+.logo-ring-outer::before{top:-2.5px;left:50%;margin-left:-2.5px}
+.logo-ring-outer::after{bottom:-2.5px;left:50%;margin-left:-2.5px}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+.logo-ring-inner {
+  position:absolute;inset:-6px;border-radius:28px;
+  border:1px solid rgba(0,255,213,0.08);
+  animation:spinSlow 10s linear infinite reverse;
+}
+.logo-img {
+  width:130px;height:130px;border-radius:24px;
+  object-fit:cover;
+  border:1px solid rgba(0,255,213,0.15);
+  position:relative;z-index:2;
+  box-shadow:0 0 36px rgba(0,255,213,0.1),inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.logo-fallback {
+  width:130px;height:130px;border-radius:24px;
+  background:linear-gradient(135deg,rgba(0,255,213,.12),rgba(37,99,235,.08));
+  border:1px solid rgba(0,255,213,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-h);font-size:52px;font-weight:900;
+  color:var(--teal);position:relative;z-index:2;
+}
+
+/* product name under logo */
+.product-name {
+  font-family:var(--font-h);font-size:20px;font-weight:700;
+  letter-spacing:-.01em;color:var(--text);
+  margin-bottom:6px;text-align:center;
+  animation: fadeUp .6s .4s both;
+}
+.product-ver {
+  font-family:var(--font-mono);font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--teal);opacity:.7;
+  text-align:center;
+  animation: fadeUp .6s .46s both;
+}
+
+/* ── FOOTER ── */
+.footer {
+  position:fixed;bottom:0;left:0;right:0;
+  z-index:20;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 32px;
+  background:rgba(6,6,10,0.72);
+  backdrop-filter:blur(16px);
+  border-top:1px solid rgba(255,255,255,0.05);
+}
+.footer-left {
+  display:flex;align-items:center;gap:10px;
+}
+.footer-dot {
+  width:5px;height:5px;border-radius:50%;
+  background:var(--teal);opacity:.7;
+  box-shadow:0 0 6px var(--teal-glow);
+}
+.footer-brand {
+  font-family:var(--font-body);font-size:12px;font-weight:600;
+  color:var(--text-2);letter-spacing:.03em;
+}
+.footer-center {
+  font-family:var(--font-mono);font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-3);
+}
+.footer-right {
+  font-family:var(--font-mono);font-size:10px;
+  color:var(--text-3);letter-spacing:.05em;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:none}
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:760px){
+  .layout{grid-template-columns:1fr;min-height:auto;max-height:95vh;overflow-y:auto}
+  .left{border-right:1px solid var(--border-md);border-bottom:none;border-radius:24px 24px 0 0;padding:40px 28px 32px}
+  .right{border-left:1px solid var(--border-md);border-radius:0 0 24px 24px;padding:36px 28px 40px}
+  .right::before{display:none}
+  .dl-btn{align-self:stretch;justify-content:center}
+  .about-link{align-self:stretch;justify-content:center}
+  .footer-center{display:none}
+}
+</style>
 </head>
-
 <body>
 
-    <div class="background-glow"></div>
+<canvas id="bg-canvas"></canvas>
 
-    <div class="card">
+<div class="layout">
 
-        <div class="logo">
-            J
-        </div>
+  <!-- ══ LEFT — HERO TEXT ══ -->
+  <div class="left">
 
-        <h1>Jarvis Assistant</h1>
+    <div class="eyebrow">Offline Desktop Assistant</div>
 
-        <p>
-            Futuristic Offline Desktop Assistant
-            for Gamers & Power Users.
-        </p>
+    <h1>
+      <span class="white">Jarvis</span><br>
+      <span class="teal">Assistant</span>
+    </h1>
 
-        <a class="download-btn"
-        href="https://github.com/sutharvandan999/jarvis-assistant1/releases/download/v0.1/Jarvis.Assistant.exe">
+    <p class="tagline">Command your desktop. Monitor everything.<br>Built for those who demand more.</p>
 
-        Download for Windows
-
-        </a>
-
-        <a class="version"
-            href="about.html">
-
-            Version 0.2 Beta
-
-        </a>
-
+    <div class="rule">
+      <div class="rule-line"></div>
+      <div class="rule-diamond"></div>
+      <div class="rule-line" style="background:linear-gradient(to left,var(--gold-border),transparent)"></div>
     </div>
 
-</body>
+    <div class="features">
+      <div class="feat-item">Real-time CPU & hardware monitoring</div>
+      <div class="feat-item">Instant app launcher &amp; process manager</div>
+      <div class="feat-item">Gaming-focused UI with custom themes</div>
+      <div class="feat-item">Fully offline — zero cloud dependency</div>
+    </div>
 
+    <a class="dl-btn"
+       href="https://github.com/sutharvandan999/jarvis-assistant1/releases/download/v0.1/Jarvis.Assistant.exe">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download for Windows
+    </a>
+
+    <a class="about-link" href="about.html">
+      View Full Details &amp; Screenshots
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </a>
+
+  </div>
+
+  <!-- ══ RIGHT — LOGO + STATS ══ -->
+  <div class="right">
+
+    <div class="logo-stage">
+      <div class="logo-glow"></div>
+      <div class="logo-ring-outer"></div>
+      <div class="logo-ring-inner"></div>
+      <img class="logo-img" src="assets/jarvis.ico" alt="Jarvis"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="logo-fallback" style="display:none">J</div>
+    </div>
+
+    <div class="product-name">Jarvis Assistant</div>
+    <div class="product-ver">Version 0.2 Beta</div>
+
+
+
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-left">
+    <div class="footer-dot"></div>
+    <span class="footer-brand">Jarvis Assistant</span>
+  </div>
+  <div class="footer-center">Version 0.2 Beta</div>
+  <div class="footer-right">© 2026 &nbsp;·&nbsp; All Rights Reserved</div>
+</footer>
+
+<script>
+const cv=document.getElementById('bg-canvas'),cx=cv.getContext('2d');
+let W,H;
+const resize=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight;buildNebula();buildStars();};
+window.addEventListener('resize',resize);
+
+let nebCv,nebCx;
+function buildNebula(){
+  nebCv=document.createElement('canvas');nebCv.width=W;nebCv.height=H;
+  nebCx=nebCv.getContext('2d');
+  const base=nebCx.createRadialGradient(W*.5,H*.3,0,W*.5,H*.3,W*.85);
+  base.addColorStop(0,'rgba(8,20,46,1)');base.addColorStop(.4,'rgba(5,12,28,1)');base.addColorStop(1,'rgba(2,4,10,1)');
+  nebCx.fillStyle=base;nebCx.fillRect(0,0,W,H);
+  const n1=nebCx.createRadialGradient(W*.75,H*.15,0,W*.75,H*.15,W*.45);
+  n1.addColorStop(0,'rgba(0,255,213,0.09)');n1.addColorStop(.4,'rgba(0,180,150,0.04)');n1.addColorStop(1,'rgba(0,100,90,0)');
+  nebCx.fillStyle=n1;nebCx.fillRect(0,0,W,H);
+  const n2=nebCx.createRadialGradient(W*.1,H*.5,0,W*.1,H*.5,W*.55);
+  n2.addColorStop(0,'rgba(37,99,235,0.1)');n2.addColorStop(.35,'rgba(20,50,160,0.05)');n2.addColorStop(1,'rgba(10,20,80,0)');
+  nebCx.fillStyle=n2;nebCx.fillRect(0,0,W,H);
+  const n3=nebCx.createRadialGradient(W*.9,H*.85,0,W*.9,H*.85,W*.4);
+  n3.addColorStop(0,'rgba(120,60,220,0.07)');n3.addColorStop(.5,'rgba(80,30,160,0.03)');n3.addColorStop(1,'rgba(40,10,80,0)');
+  nebCx.fillStyle=n3;nebCx.fillRect(0,0,W,H);
+  const aurora=nebCx.createLinearGradient(0,H*.38,W,H*.55);
+  aurora.addColorStop(0,'rgba(0,255,213,0)');aurora.addColorStop(.2,'rgba(0,255,213,0.025)');
+  aurora.addColorStop(.5,'rgba(0,180,150,0.04)');aurora.addColorStop(.8,'rgba(37,99,235,0.025)');aurora.addColorStop(1,'rgba(37,99,235,0)');
+  nebCx.fillStyle=aurora;nebCx.fillRect(0,H*.32,W,H*.3);
+  const gx=W*.5,gy=H*.44;
+  nebCx.save();nebCx.strokeStyle='rgba(0,255,213,0.028)';nebCx.lineWidth=0.8;
+  for(let i=0;i<=18;i++){const bx=(i/18)*W;nebCx.beginPath();nebCx.moveTo(gx,gy);nebCx.lineTo(bx,H);nebCx.stroke();}
+  for(let r=0;r<10;r++){const t=Math.pow(r/9,1.8);const ly=gy+(H-gy)*t;const lx0=gx-(gx)*t,lx1=gx+(W-gx)*t;nebCx.beginPath();nebCx.moveTo(lx0,ly);nebCx.lineTo(lx1,ly);nebCx.stroke();}
+  nebCx.restore();
+  const vig=nebCx.createRadialGradient(W/2,H/2,H*.18,W/2,H/2,H*.95);
+  vig.addColorStop(0,'rgba(0,0,0,0)');vig.addColorStop(1,'rgba(0,0,0,0.68)');
+  nebCx.fillStyle=vig;nebCx.fillRect(0,0,W,H);
+}
+
+const LAYERS=[{count:300,rMin:.2,rMax:.6,aMax:.45,spd:.008},{count:130,rMin:.5,rMax:1.1,aMax:.65,spd:.012},{count:50,rMin:.9,rMax:1.9,aMax:.9,spd:.018}];
+let sf=[];
+function buildStars(){
+  sf=[];
+  LAYERS.forEach(l=>{
+    for(let i=0;i<l.count;i++){
+      const r=Math.random();
+      sf.push({x:Math.random()*W,y:Math.random()*H,r:l.rMin+Math.random()*(l.rMax-l.rMin),ba:(0.2+Math.random()*.8)*l.aMax,ph:Math.random()*Math.PI*2,sp:l.spd*(0.5+Math.random()),c:r<.08?'0,255,213':r<.14?'150,190,255':'220,235,255'});
+    }
+  });
+}
+let tick=0;
+function drawStars(){
+  tick+=.016;
+  sf.forEach(s=>{const a=s.ba*(0.5+0.5*Math.sin(s.ph+tick*s.sp));cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fillStyle=`rgba(${s.c},${a})`;cx.fill();});
+}
+
+const ANG=35,RAD=ANG*Math.PI/180,CS=Math.cos(RAD),SN=Math.sin(RAD);
+class SS{
+  constructor(){this.alive=false}
+  spawn(){
+    this.alive=true;
+    const e=Math.random();
+    if(e<.7){this.x=Math.random()*W*1.4-W*.2;this.y=-10;}
+    else{this.x=-10;this.y=Math.random()*H*.5;}
+    this.spd=Math.random()*14+10;this.len=Math.random()*180+80;
+    this.w=Math.random()*1.5+0.6;this.life=0;this.ml=Math.floor((this.len+W)/this.spd)+20;
+    const r=Math.random();this.col=r<.55?'210,240,255':r<.85?'0,255,213':'120,160,255';
+  }
+  tick(){if(!this.alive)return;this.x+=this.spd*CS;this.y+=this.spd*SN;this.life++;if(this.x>W+60||this.y>H+60||this.life>this.ml)this.alive=false;}
+  draw(){
+    if(!this.alive)return;
+    const p=this.life/this.ml,a=Math.sin(p*Math.PI);
+    const tx=this.x-CS*this.len,ty=this.y-SN*this.len;
+    const g=cx.createLinearGradient(tx,ty,this.x,this.y);
+    g.addColorStop(0,`rgba(${this.col},0)`);g.addColorStop(.3,`rgba(${this.col},${a*.15})`);g.addColorStop(1,`rgba(${this.col},${a})`);
+    cx.save();cx.beginPath();cx.moveTo(tx,ty);cx.lineTo(this.x,this.y);cx.strokeStyle=g;cx.lineWidth=this.w;cx.lineCap='round';cx.stroke();
+    const fl=cx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.w*3);
+    fl.addColorStop(0,`rgba(255,255,255,${a*.9})`);fl.addColorStop(.4,`rgba(${this.col},${a*.5})`);fl.addColorStop(1,`rgba(${this.col},0)`);
+    cx.beginPath();cx.arc(this.x,this.y,this.w*3,0,Math.PI*2);cx.fillStyle=fl;cx.fill();cx.restore();
+  }
+}
+const pool=Array.from({length:6},()=>new SS());
+let nextS=Date.now()+Math.random()*2000+800;
+function maybeSpawn(){const now=Date.now();if(now<nextS)return;const s=pool.find(s=>!s.alive);if(s)s.spawn();nextS=now+Math.random()*3700+800;}
+
+resize();
+function loop(){
+  cx.clearRect(0,0,W,H);
+  cx.drawImage(nebCv,0,0);
+  drawStars();maybeSpawn();
+  pool.forEach(s=>{s.tick();s.draw();});
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
 </html>
